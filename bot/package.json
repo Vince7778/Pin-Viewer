@@ -1,0 +1,17 @@
+{
+    "name": "pin-bot",
+    "version": "0.0.1",
+    "description": "A bot that reads Discord pins.",
+    "main": "out/index.js",
+    "scripts": {
+        "start": "tsc && node ."
+    },
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "discord.js": "^13.7.0"
+    },
+    "devDependencies": {
+        "eslint": "^8.16.0"
+    }
+}
