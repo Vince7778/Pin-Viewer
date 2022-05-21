@@ -18,7 +18,7 @@ export async function fetchPinsGuild(guild: Guild) {
 
     const channels = await guild.channels.fetch();
 
-    // combine channel pins into one collection
+    // combine channel pins into one array
     const allPins: Pin[] = [];
     for (const channel of channels.values()) {
         if (!channel.isText()) continue;
@@ -33,7 +33,7 @@ export async function fetchPinsGuild(guild: Guild) {
 export async function fetchPins(client: Client) {
     const guilds = await client.guilds.fetch();
 
-    // combine guild pins into one collection
+    // combine guild pins into one array
     const allPins: Pin[] = [];
     for (const oauthGuild of guilds.values()) {
         const guild = await oauthGuild.fetch();
