@@ -1,29 +1,29 @@
-import { Message, Snowflake, TextChannel } from "discord.js";
+import { Client, Message, Snowflake, TextChannel } from "discord.js";
 
 // This class is a subset of the Discord.Message class that just contains the fields the app needs.
 export class Pin {
     id: Snowflake;
-    content: string;
-    channel: {
-        id: Snowflake;
-        name: string;
-    };
-    guild: {
-        id: Snowflake;
-        name: string;
-    };
+    channelId: Snowflake;
+    guildId: Snowflake;
 
-    constructor(id: Snowflake, content: string, channel: {id: Snowflake, name: string}, guild: {id: Snowflake, name: string}) {
+    constructor(id: Snowflake, channelId: Snowflake, guildId: Snowflake) {
         this.id = id;
-        this.content = content;
-        this.channel = channel;
-        this.guild = guild;
+        this.channelId = channelId;
+        this.guildId = guildId;
+    }
+
+    async getMessage(client: Client) {
+        const channel = await client.channels.fetch(this.channelId);
+        if (!(channel instanceof TextChannel)) {
+            throw new Error("Pin channel somehow does not support messages");
+        }
+        return await channel.messages.fetch(this.id);
     }
 
     static fromMessage(msg: Message) {
         if (!(msg.channel instanceof TextChannel)) {
             throw new Error("DM pins not supported");
         }
-        return new Pin(msg.id, msg.content, { id: msg.channel.id, name: msg.channel.name }, { id: msg.channel.guild.id, name: msg.channel.guild.name });
+        return new Pin(msg.id, msg.channelId, msg.channel.guildId);
     }
 }

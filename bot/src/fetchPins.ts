@@ -1,12 +1,13 @@
-import { Client, Collection, Guild, GuildChannel, Message, Snowflake, TextBasedChannel } from "discord.js";
+import { Client, Guild, GuildChannel, TextBasedChannel } from "discord.js";
+import { Pin } from "./Pin";
 
 // Fetch all pins in a certain channel.
 export async function fetchPinsChannel(channel: TextBasedChannel) {
     if (channel instanceof GuildChannel && !channel.viewable) {
-        return new Collection<Snowflake, Message>();
+        return [];
     }
     const pinned = await channel.messages.fetchPinned();
-    return pinned;
+    return Array.from(pinned.values()).map(Pin.fromMessage);
 }
 
 // Fetch all pins from all channels in a guild.
@@ -18,26 +19,26 @@ export async function fetchPinsGuild(guild: Guild) {
     const channels = await guild.channels.fetch();
 
     // combine channel pins into one collection
-    let allPins = new Collection<Snowflake, Message>();
+    const allPins: Pin[] = [];
     for (const channel of channels.values()) {
         if (!channel.isText()) continue;
         const channelPins = await fetchPinsChannel(channel);
-        allPins = allPins.concat(channelPins);
+        allPins.push(...channelPins);
     }
 
     return allPins;
 }
 
-// Fetch all pins from all guilds.
+// Fetch all pins from all guilds. This does not include DMs.
 export async function fetchPins(client: Client) {
     const guilds = await client.guilds.fetch();
 
     // combine guild pins into one collection
-    let allPins = new Collection<Snowflake, Message>();
+    const allPins: Pin[] = [];
     for (const oauthGuild of guilds.values()) {
         const guild = await oauthGuild.fetch();
         const guildPins = await fetchPinsGuild(guild);
-        allPins = allPins.concat(guildPins);
+        allPins.push(...guildPins);
     }
 
     return allPins;
