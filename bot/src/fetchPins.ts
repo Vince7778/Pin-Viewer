@@ -1,5 +1,4 @@
 import { Client, Collection, Guild, GuildChannel, Message, Snowflake, TextBasedChannel } from "discord.js";
-import Utils from "./utils";
 
 // Fetch all pins in a certain channel.
 export async function fetchPinsChannel(channel: TextBasedChannel) {
@@ -25,7 +24,7 @@ export async function fetchPinsGuild(guild: Guild) {
         const channelPins = await fetchPinsChannel(channel);
         allPins = allPins.concat(channelPins);
     }
-    
+
     return allPins;
 }
 
