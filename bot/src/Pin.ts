@@ -12,6 +12,7 @@ export class Pin {
         this.guildId = guildId;
     }
 
+    // Get the message that is represented by this pin
     async getMessage(client: Client) {
         const channel = await client.channels.fetch(this.channelId);
         if (!(channel instanceof TextChannel)) {
@@ -20,6 +21,7 @@ export class Pin {
         return await channel.messages.fetch(this.id);
     }
 
+    // Convert Discord.Message into Pin
     static fromMessage(msg: Message) {
         if (!(msg.channel instanceof TextChannel)) {
             throw new Error("DM pins not supported");
